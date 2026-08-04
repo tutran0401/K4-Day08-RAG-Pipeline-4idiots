@@ -417,7 +417,104 @@ Một pipeline có thể pass toàn bộ unit test nhưng chất lượng retrie
 - Proxy evaluation phù hợp CI, không thay thế đánh giá bằng người dùng hoặc LLM judge chính thức.
 - Index tự kiểm tra thời gian sửa tài liệu, nhưng không tự nhận biết mọi thay đổi cấu hình model/chunk. Sau khi đổi các cấu hình đó, hãy chủ động chạy lại Task 4.
 
-## 16. Khi giao AI sửa dự án, nên mô tả yêu cầu thế nào?
+## 16. Phân công theo thành viên và checkpoint
+
+Phần này trả lời câu hỏi: **“Sau mỗi checkpoint, mỗi thành viên đã tạo ra gì, phải hiểu phần nào và bàn giao gì cho người tiếp theo?”** Ma trận dưới đây lấy theo `PROJECT_HANDOFF.md`; phần phân công tổng quát trong các README có thể viết ngắn hơn nên không dùng thay cho bảng checkpoint này.
+
+### Bản đồ ownership nhanh
+
+| Thành viên | Role xuyên suốt | Phần chịu trách nhiệm chính |
+|---|---|---|
+| **Bùi Tùng Lâm** — `2A202601676` | Role 1 — Team Leader & Architect | Điều phối, duyệt kiến trúc, review tích hợp, kiểm tra kết quả và thuyết trình tổng quan |
+| **Chu Tâm Vũ** — `2A202601360` | Role 2 — Data & Retrieval Specialist | Task 1, Task 4, Task 7, Task 9 và nối retrieval với generation |
+| **Nguyễn Đức Anh Tuấn** — `2A202601618` | Role 3 — Frontend & Chatbot Developer | Task 2, Task 5, Task 8, Task 10, Streamlit UI và live demo |
+| **Trần Anh Tú** — `2A202601674` | Role 4 — Evaluation & QA Engineer | Task 3, Task 6, QA fallback/citation, golden dataset và báo cáo A/B |
+
+Các role không có nghĩa là một người làm một mình toàn bộ hệ thống. Người phụ trách là **owner** của kết quả và là người giải thích phần đó khi review/demo; các thành viên còn lại vẫn cần hiểu input, output và điểm tích hợp.
+
+### Checkpoint 1 — Thu thập và chuẩn hóa dữ liệu
+
+**Mục tiêu:** biến nguồn chính sách/bài hỗ trợ thành Markdown sạch, có metadata và có thể đưa vào index.
+
+| Người | Việc phải làm | File/thư mục cần nắm | Bàn giao cuối checkpoint |
+|---|---|---|---|
+| Bùi Tùng Lâm | Điều phối URL, thống nhất phạm vi dữ liệu, review nguồn và metadata | `data/SOURCES.md`, `data/landing/`, `src/task1_collect_legal_docs.py`, `src/task2_crawl_news.py` | Danh sách nguồn hợp lệ, quy ước tên file, xác nhận corpus đủ chủ đề |
+| Chu Tâm Vũ | **Task 1:** thu thập tối thiểu 3 policy legal | `src/task1_collect_legal_docs.py`, `data/landing/legal/` | File policy gốc, inventory tên/kích thước và URL có thể kiểm tra |
+| Nguyễn Đức Anh Tuấn | **Task 2:** crawl tối thiểu 5 bài help-center | `src/task2_crawl_news.py`, `data/landing/news/` | JSON có `url`, `title`, `date_crawled`, `content_markdown` |
+| Trần Anh Tú | **Task 3 + QA:** convert legal/news sang Markdown và kiểm tra metadata | `src/task3_convert_markdown.py`, `data/standardized/` | 13 Markdown đọc được, không rỗng, giữ source/date/customer role |
+
+**Điều kiện chuyển checkpoint:** `data/standardized/legal/` và `data/standardized/news/` có nội dung; không commit cookie, token hoặc API key. Nếu crawl lại sau này, phải chạy lại Task 3 và Task 4.
+
+### Checkpoint 2 — Indexing và hai nhánh retrieval
+
+**Mục tiêu:** từ Markdown tạo index dùng được cho tìm kiếm theo ý nghĩa và theo từ khóa.
+
+| Người | Việc phải làm | File cần nắm | Bàn giao cuối checkpoint |
+|---|---|---|---|
+| Bùi Tùng Lâm | Duyệt quyết định chunk size, overlap, embedding backend và cách rebuild | `src/task4_chunking_indexing.py` | Cấu hình được review; thống nhất không dùng điểm RRF làm relevance threshold |
+| Chu Tâm Vũ | **Task 4:** load → chunk → embed → persist index | `src/task4_chunking_indexing.py`, `data/index/chunks.json` | 13 tài liệu thành khoảng 85 chunks, schema chunk/metadata ổn định |
+| Nguyễn Đức Anh Tuấn | **Task 5:** semantic search bằng cosine + overlap | `src/task5_semantic_search.py`, `src/retrieval_utils.py` | `semantic_search()` trả list sorted, có `content`, `score`, `metadata`, `id` |
+| Trần Anh Tú | **Task 6 + QA:** BM25, kiểm tra query có dấu/không dấu và keyword match | `src/task6_lexical_search.py`, `tests/` | `lexical_search()` trả đúng schema, score giảm dần, không crash khi query lạ |
+
+**Điều kiện chuyển checkpoint:** chạy Task 4 sau mọi thay đổi corpus; kiểm tra semantic/BM25 trên câu hỏi payment, refund, order tracking và cả biến thể tiếng Việt không dấu.
+
+### Checkpoint 3–4 — Reranking, fallback, pipeline và generation
+
+**Mục tiêu:** nối hai retriever thành một pipeline hoàn chỉnh, có fallback khi confidence thấp và có câu trả lời grounded.
+
+| Người | Việc phải làm | File cần nắm | Bàn giao cuối checkpoint |
+|---|---|---|---|
+| Bùi Tùng Lâm | Duyệt kiến trúc, review flow và kết quả test/invariant | `src/task9_retrieval_pipeline.py`, `tests/` | Xác nhận luồng hybrid → fallback → generation đúng với thiết kế |
+| Chu Tâm Vũ | **Task 7 + Task 9:** RRF/rerank và unified retrieval | `src/task7_reranking.py`, `src/task9_retrieval_pipeline.py` | `retrieve()` chạy dense/sparse, fallback theo dense score gốc, trả tối đa `top_k` |
+| Nguyễn Đức Anh Tuấn | **Task 8 + Task 10:** structural/PageIndex fallback và generation/citation | `src/task8_pageindex_vectorless.py`, `src/task10_generation.py` | Có kết quả `source=pageindex` khi fallback; generation có citation hoặc từ chối xác minh |
+| Trần Anh Tú | QA fallback, citation, source metadata và câu hỏi lạc domain | `tests/test_pipeline_quality.py`, `src/task10_generation.py` | Danh sách case pass/fail, phát hiện citation sai hoặc hallucination |
+
+**Điều kiện chuyển checkpoint:** `retrieve()` không nhầm điểm RRF với semantic threshold; query vô nghĩa không làm pipeline crash; output generation có `answer`, `sources`, `retrieval_source`, `generation_mode`.
+
+### Checkpoint 5–6 — UI, evaluation, QA và demo
+
+**Mục tiêu:** biến pipeline thành sản phẩm nhóm có thể demo và có số liệu so sánh.
+
+| Người | Việc phải làm | File cần nắm | Bàn giao cuối checkpoint |
+|---|---|---|---|
+| Bùi Tùng Lâm | Tích hợp, điều phối branch/công việc, review cuối và thuyết trình tổng quan | `README.md`, `PROJECT_HANDOFF.md`, toàn bộ pipeline | Bản chạy thống nhất, câu chuyện kiến trúc và checklist trình bày |
+| Chu Tâm Vũ | Nối retrieval với generation, giải đáp các quyết định kỹ thuật | `src/task9_retrieval_pipeline.py`, `src/task10_generation.py` | Demo kỹ thuật: semantic/BM25/RRF/fallback và lý do chọn threshold |
+| Nguyễn Đức Anh Tuấn | Streamlit UI, conversation memory, source cards và live demo | `app.py`, `src/task10_generation.py` | UI hiển thị answer, source, score, highlight, latency và follow-up query |
+| Trần Anh Tú | Evaluation, QA cuối, golden dataset và báo cáo A/B | `group_project/evaluation/`, `tests/`, `results.md` | 16 golden cases, 4 metrics, so sánh hybrid vs dense-only, worst performers |
+
+**Điều kiện hoàn thành:** `python -m pytest -q` đạt `41 passed`; Streamlit mở được; demo có citation/source cards; `python -m group_project.evaluation.eval_pipeline` sinh được báo cáo.
+
+### Sau mỗi checkpoint, thành viên cần cập nhật gì?
+
+Mỗi owner nên ghi ngắn gọn vào handoff/commit hoặc tin nhắn nhóm theo mẫu:
+
+```text
+[Checkpoint N] [Tên] — hoàn thành phần ...
+Files chính: ...
+Input/output: ...
+Đã kiểm tra bằng: ... (lệnh + kết quả)
+Rủi ro/việc cần người kế tiếp: ...
+```
+
+Ví dụ sau Checkpoint 2:
+
+```text
+[Checkpoint 2] Chu Tâm Vũ — Task 4 hoàn thành
+Files chính: src/task4_chunking_indexing.py, data/index/chunks.json
+Output: 13 docs → 85 chunks, chunk_size=700, overlap=100, hashing embedding 768d
+Đã kiểm tra bằng: python -m src.task4_chunking_indexing; pytest -q
+Bàn giao: Nguyễn Đức Anh Tuấn dùng schema chunk này cho semantic_search; Trần Anh Tú dùng cùng index để test BM25.
+```
+
+### Ai cần đọc phần nào để nắm bắt nhanh?
+
+- **Bùi Tùng Lâm:** đọc các mục 2, 3, 6, 9 và bảng checkpoint để nói được toàn bộ flow và các điểm quyết định.
+- **Chu Tâm Vũ:** đọc mục 5–6, Task 4–7–9 và cách threshold/fusion hoạt động.
+- **Nguyễn Đức Anh Tuấn:** đọc mục 7–8, Task 2–5–8–10 và cách UI truyền history vào generation.
+- **Trần Anh Tú:** đọc mục 9, 14, `tests/` và `group_project/evaluation/` để biết cách chứng minh pipeline đúng/chưa tốt.
+- **Cả nhóm:** phải biết schema kết quả retrieval, cách chạy test, cách fallback và nơi xem source citation.
+
+## 17. Khi giao AI sửa dự án, nên mô tả yêu cầu thế nào?
 
 Nên nêu rõ tầng cần thay đổi và tiêu chí kiểm tra. Ví dụ:
 
@@ -437,7 +534,7 @@ Những ràng buộc nên nhắc AI:
 - chạy evaluation nếu thay retrieval, rerank hoặc generation;
 - giải thích ảnh hưởng đến chế độ offline và production.
 
-## 17. Tóm tắt trong một phút
+## 18. Tóm tắt trong một phút
 
 - `data/standardized/` là kho kiến thức thực tế của chatbot.
 - Task 4 biến tài liệu thành index gồm các chunk và embedding.
