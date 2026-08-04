@@ -1,17 +1,114 @@
 [
   {
     "question": "Người mua có thể yêu cầu trả hàng/hoàn tiền trong thời hạn bao lâu sau khi nhận hàng?",
-    "expected_answer": "Trong vòng 15 ngày kể từ khi giao hàng thành công (24 giờ đối với thực phẩm tươi sống/đông lạnh).",
-    "expected_context": "Trang Returns and Refunds Policy, mục Return/Refund Eligibility"
+    "expected_answer": "Trong vòng 15 ngày kể từ khi giao hàng thành công; riêng thực phẩm tươi sống hoặc đông lạnh là 24 giờ.",
+    "expected_context": "Returns and Refunds Policy - Eligibility and deadline",
+    "expected_source": "returns_refunds_policy.md",
+    "customer_role": "buyer"
   },
   {
     "question": "Shopee hỗ trợ những phương thức thanh toán nào?",
-    "expected_answer": "ShopeePay Wallet, thẻ tín dụng/ghi nợ, trả góp qua thẻ, QR Code, chuyển khoản qua app ngân hàng, thẻ NAPAS, Apple Pay, Google Pay, và COD.",
-    "expected_context": "Trang Payment Methods Overview"
+    "expected_answer": "Có thể gồm ShopeePay, thẻ tín dụng hoặc ghi nợ, trả góp, QR Code, ứng dụng ngân hàng, NAPAS, Apple Pay, Google Pay và COD; lựa chọn thực tế phụ thuộc checkout.",
+    "expected_context": "Payment Methods Overview - Supported methods",
+    "expected_source": "payment_methods_policy.md",
+    "customer_role": "buyer"
   },
   {
     "question": "Người bán không được đăng bán những sản phẩm nào?",
-    "expected_answer": "Hàng giả/nhái, sản phẩm bất hợp pháp, vi phạm sở hữu trí tuệ, và các mặt hàng nằm trong danh sách cấm của sàn.",
-    "expected_context": "Trang Product Listing Regulations, mục Prohibited Content"
+    "expected_answer": "Không được đăng hàng giả hoặc nhái, hàng bất hợp pháp hoặc đánh cắp, sản phẩm xâm phạm sở hữu trí tuệ và mặt hàng thuộc danh sách cấm hoặc hạn chế.",
+    "expected_context": "Seller Listing Regulations - Prohibited products and content",
+    "expected_source": "seller_listing_privacy_policy.md",
+    "customer_role": "seller"
+  },
+  {
+    "question": "Cần chuẩn bị bằng chứng gì khi yêu cầu hoàn tiền vì hàng bị hỏng?",
+    "expected_answer": "Cần ảnh rõ hoặc video liên tục cho thấy toàn bộ kiện hàng, nhãn vận chuyển, bao bì, sản phẩm, model, số lượng và vị trí hư hỏng.",
+    "expected_context": "Chuẩn bị bằng chứng trả hàng/hoàn tiền",
+    "expected_source": "refund_evidence_guide.md",
+    "customer_role": "buyer"
+  },
+  {
+    "question": "Tôi theo dõi hành trình đơn hàng ở đâu?",
+    "expected_answer": "Mở mục Tôi, chọn Đơn mua rồi chọn đơn cần kiểm tra để xem trạng thái và các mốc vận chuyển khả dụng.",
+    "expected_context": "Theo dõi trạng thái và hành trình đơn hàng",
+    "expected_source": "order_tracking_guide.md",
+    "customer_role": "buyer"
+  },
+  {
+    "question": "Có thể đổi phương thức thanh toán sau khi đã đặt hàng không?",
+    "expected_answer": "Thông thường không thể sửa trực tiếp phương thức của đơn đã tạo; nếu đơn còn được hủy, có thể hủy và đặt đơn mới với phương thức khác.",
+    "expected_context": "Chọn và thay đổi phương thức thanh toán",
+    "expected_source": "change_payment_guide.md",
+    "customer_role": "buyer"
+  },
+  {
+    "question": "COD có luôn khả dụng cho mọi đơn không?",
+    "expected_answer": "Không. COD chỉ khả dụng khi checkout hiển thị lựa chọn đó cho giao dịch cụ thể.",
+    "expected_context": "Payment Methods Overview - Selecting or changing payment",
+    "expected_source": "payment_methods_policy.md",
+    "customer_role": "buyer"
+  },
+  {
+    "question": "Tôi có nên cung cấp mã OTP cho nhân viên hỗ trợ để nhận hoàn tiền không?",
+    "expected_answer": "Không. Không cung cấp OTP, PIN hoặc mật khẩu; nhân viên hỗ trợ hợp lệ không cần OTP của người dùng để hoàn tiền.",
+    "expected_context": "Bảo vệ tài khoản và dữ liệu cá nhân",
+    "expected_source": "account_privacy_guide.md",
+    "customer_role": "both"
+  },
+  {
+    "question": "Người bán phải cung cấp thông tin gì trong bài đăng sản phẩm?",
+    "expected_answer": "Phải cung cấp chính xác tiêu đề, mô tả, ảnh, phân loại, tình trạng, nguồn gốc, giá và tồn kho, đồng thời đặt đúng danh mục.",
+    "expected_context": "Seller Listing Regulations - Accurate listings",
+    "expected_source": "seller_listing_privacy_policy.md",
+    "customer_role": "seller"
+  },
+  {
+    "question": "Vì sao đơn hàng quốc tế có thể giao lâu hơn?",
+    "expected_answer": "Vì kiện hàng có thể đi qua nhiều chặng vận chuyển và thủ tục kiểm tra; nên theo dõi ngày dự kiến trong chi tiết đơn.",
+    "expected_context": "Mua hàng quốc tế và xuyên biên giới",
+    "expected_source": "cross_border_shopping_guide.md",
+    "customer_role": "buyer"
+  },
+  {
+    "question": "Nếu trạng thái báo đã giao nhưng tôi chưa nhận được hàng thì làm gì?",
+    "expected_answer": "Dùng kênh hỗ trợ trong ứng dụng và cung cấp mã đơn, mã vận đơn cùng mô tả; không đăng công khai dữ liệu cá nhân.",
+    "expected_context": "Theo dõi trạng thái và hành trình đơn hàng",
+    "expected_source": "order_tracking_guide.md",
+    "customer_role": "buyer"
+  },
+  {
+    "question": "Tại sao phương thức thanh toán của tôi có thể không xuất hiện ở checkout?",
+    "expected_answer": "Phương thức có thể phụ thuộc tài khoản, địa chỉ, người bán, loại sản phẩm, giá trị đơn, khuyến mãi hoặc kiểm soát rủi ro; chỉ lựa chọn hiển thị mới áp dụng.",
+    "expected_context": "Payment Methods Overview - Supported methods",
+    "expected_source": "payment_methods_policy.md",
+    "customer_role": "buyer"
+  },
+  {
+    "question": "Sàn có thể xử lý người bán vi phạm quy định đăng bán như thế nào?",
+    "expected_answer": "Sàn có thể gỡ bài, hạn chế hiển thị, yêu cầu chứng từ, giới hạn chức năng, hủy giao dịch liên quan hoặc đình chỉ tài khoản.",
+    "expected_context": "Seller Listing Regulations - Prohibited products and content",
+    "expected_source": "seller_listing_privacy_policy.md",
+    "customer_role": "seller"
+  },
+  {
+    "question": "Dịch vụ có thể xử lý những nhóm dữ liệu cá nhân nào?",
+    "expected_answer": "Có thể xử lý thông tin tài khoản, liên hệ và giao hàng, lịch sử giao dịch, dữ liệu thiết bị hoặc nhật ký và trao đổi hỗ trợ.",
+    "expected_context": "Privacy principles",
+    "expected_source": "account_privacy_guide.md",
+    "customer_role": "both"
+  },
+  {
+    "question": "Tôi có nên gửi trả hàng bên ngoài quy trình của ứng dụng không?",
+    "expected_answer": "Không nên; hãy làm theo phương thức gửi trả và thời hạn hiển thị vì gửi ngoài quy trình có thể không được theo dõi hoặc bảo vệ.",
+    "expected_context": "Returns and Refunds Policy - Procedure",
+    "expected_source": "returns_refunds_policy.md",
+    "customer_role": "buyer"
+  },
+  {
+    "question": "Khi mua hàng quốc tế tôi cần kiểm tra gì trước khi thanh toán?",
+    "expected_answer": "Nên kiểm tra mô tả, phân loại, đánh giá, nơi gửi và điều kiện đổi trả; khả năng đặt còn phụ thuộc địa chỉ, hạn chế vận chuyển và quy định mặt hàng.",
+    "expected_context": "Mua hàng quốc tế và xuyên biên giới",
+    "expected_source": "cross_border_shopping_guide.md",
+    "customer_role": "buyer"
   }
 ]
