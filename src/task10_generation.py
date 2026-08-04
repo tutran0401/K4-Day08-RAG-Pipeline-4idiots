@@ -18,9 +18,11 @@ TOP_P = 0.9
 TEMPERATURE = 0.2
 LLM_MODEL = os.getenv("LLM_MODEL", "openai/gpt-4o-mini")
 
-SYSTEM_PROMPT = """Bạn là trợ lý chính sách thương mại điện tử. Chỉ dùng context được cung cấp.
+REFUSAL_TEXT = "Tôi không thể xác minh thông tin này từ nguồn hiện có."
+
+SYSTEM_PROMPT = f"""Bạn là trợ lý chính sách thương mại điện tử. Chỉ dùng context được cung cấp.
 Mỗi khẳng định phải có citation [tên nguồn]. Nếu context không đủ, trả lời đúng câu:
-\"Tôi không thể xác minh thông tin này từ nguồn hiện có.\" Trả lời bằng tiếng Việt, ngắn gọn."""
+\"{REFUSAL_TEXT}\" Trả lời bằng tiếng Việt, ngắn gọn."""
 
 
 def expand_follow_up_query(query: str, conversation_history: list[dict] | None = None) -> str:
@@ -184,7 +186,11 @@ def generate_with_citation(
                 model=model, messages=messages, temperature=TEMPERATURE, top_p=TOP_P
             )
             answer = response.choices[0].message.content or ""
-            if answer and not re.search(r"\[[^\]]+\]", answer):
+            # The designed refusal is intentionally citation-free; only treat a *substantive*
+            # uncited claim as an untrustworthy response requiring the extractive fallback.
+            if answer.strip() == REFUSAL_TEXT:
+                used_llm = True
+            elif answer and not re.search(r"\[[^\]]+\]", answer):
                 generation_warning = "LLM response had no citation; used grounded extractive fallback."
                 answer = ""
             else:
