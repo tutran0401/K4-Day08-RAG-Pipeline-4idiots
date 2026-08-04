@@ -1,0 +1,9 @@
+# Chuẩn bị bằng chứng cho yêu cầu trả hàng hoàn tiền
+
+**Source:** https://help.shopee.vn/portal/4/article/77251  
+**Crawled:** 2026-08-04T09:05:00+07:00  
+**Customer role:** buyer
+
+Bằng chứng nên cho thấy toàn bộ kiện hàng, nhãn vận chuyển, tình trạng bao bì, sản phẩm nhận được và lỗi hoặc điểm khác biệt đang khiếu nại. Ảnh cần rõ nét; video nên liên tục, không chỉnh sửa và thể hiện quá trình mở kiện khi điều đó liên quan. Với trường hợp thiếu hàng, hãy thể hiện tất cả sản phẩm và phụ kiện đã nhận. Với sai mẫu hoặc hàng hỏng, ghi lại model, số lượng và vị trí hư hỏng.
+
+Giữ sản phẩm, hộp, phụ kiện và quà tặng cho đến khi có hướng dẫn xử lý. Chỉ tải bằng chứng của đúng đơn hàng và che dữ liệu cá nhân không cần thiết. Yêu cầu thiếu bằng chứng hoặc gửi sau thời hạn hiển thị có thể không đủ cơ sở xem xét. Người mua phải chọn lý do trung thực trong luồng Return/Refund của ứng dụng.

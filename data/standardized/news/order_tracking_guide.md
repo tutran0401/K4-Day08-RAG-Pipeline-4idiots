@@ -1,0 +1,9 @@
+# Theo dõi trạng thái và hành trình đơn hàng
+
+**Source:** https://help.shopee.vn/portal/4  
+**Crawled:** 2026-08-04T09:00:00+07:00  
+**Customer role:** buyer
+
+Người mua mở mục Tôi, chọn Đơn mua và chọn đơn cần kiểm tra. Trang chi tiết đơn hiển thị trạng thái chuẩn bị hàng, bàn giao cho đơn vị vận chuyển, đang giao hoặc đã giao cùng các mốc theo dõi khả dụng. Mã vận đơn chỉ xuất hiện sau khi kiện hàng được tạo và quét vào mạng lưới vận chuyển.
+
+Nếu hành trình chưa cập nhật trong thời gian ngắn, người mua nên chờ lần quét tiếp theo. Khi đơn vượt quá ngày giao dự kiến hoặc trạng thái giao thành công nhưng chưa nhận được hàng, hãy dùng kênh hỗ trợ trong ứng dụng và cung cấp mã đơn, mã vận đơn cùng mô tả ngắn. Không đăng số điện thoại, địa chỉ hoặc mã xác thực ở nơi công khai. Thông tin trong trang chi tiết đơn là dữ liệu ưu tiên cho đúng giao dịch đó.

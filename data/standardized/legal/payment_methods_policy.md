@@ -1,0 +1,18 @@
+E-COMMERCE PAYMENT METHODS OVERVIEW - EDUCATIONAL SNAPSHOT
+Source reference: https://help.shopee.vn/portal/4/article/79198
+Customer role: buyer
+Last reviewed for this lab dataset: 2026-08-04
+
+This document summarizes public support information for classroom retrieval experiments. Availability is determined by the checkout screen, account, merchant, product and current platform rules.
+
+SUPPORTED PAYMENT METHODS
+The checkout may support ShopeePay Wallet, domestic or international credit and debit cards, card installments for eligible cards and orders, QR Code, transfer through a linked banking application, NAPAS cards, Apple Pay, Google Pay, and cash on delivery (COD). A particular method can be absent for an account, address, seller, product category, order value, promotion or risk-control decision. The payment choices displayed at checkout are authoritative for that transaction.
+
+PAYMENT SELECTION AND CHANGES
+The buyer selects a method before placing the order. A completed order normally cannot be edited to replace its payment method. If the order is still eligible for cancellation, the buyer may cancel and place a new order with another available method; stock, price and vouchers are not guaranteed to remain the same. The buyer should never transfer money to an unknown personal account outside the official checkout flow.
+
+COD AND ELECTRONIC PAYMENTS
+COD means payment is collected when the parcel is delivered and is only available when displayed at checkout. Card or wallet authorization can fail because of balance, limits, authentication, bank rules or temporary system conditions. A pending charge is not by itself proof that the order was created. The buyer should check order status and the payment channel before retrying to avoid duplicate transactions.
+
+SECURITY
+Never disclose passwords, one-time passwords, PINs or full card authentication information through chat. Report suspicious requests through official support channels. This snapshot is not a promise that every listed method is available for every order.
