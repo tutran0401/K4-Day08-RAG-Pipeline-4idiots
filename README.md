@@ -566,10 +566,10 @@ Streamlit → Query Expansion → Semantic ┐
 
 | Thành viên | MSSV | Nhiệm vụ | Trạng thái |
 |-----------|------|----------|------------|
-| Bùi Tùng Lâm | 2A202601676 | Role 1 — Team Leader & Architect: điều phối, review kiến trúc, tích hợp và thuyết trình tổng quan | Hoàn thành |
-| Chu Tâm Vũ | 2A202601360 | Role 2 — Data & Retrieval Specialist: Task 1, 4, 7, 9 và tích hợp generation | Hoàn thành |
-| Nguyễn Đức Anh Tuấn | 2A202601618 | Role 3 — Frontend & Chatbot Developer: Task 2, 5, 8, 10 và Streamlit UI | Hoàn thành |
-| Trần Anh Tú | 2A202601674 | Role 4 — Evaluation & QA Engineer: Task 3, 6, fallback/citation QA và evaluation | Hoàn thành |
+| | | | |
+| | | | |
+| | | | |
+| | | | |
 
 ---
 
