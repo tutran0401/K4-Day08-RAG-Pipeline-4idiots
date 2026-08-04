@@ -14,6 +14,7 @@ from pathlib import Path
 
 import requests
 from dotenv import load_dotenv
+from pageindex import PageIndexAPIError, PageIndexClient
 
 from .retrieval_utils import configure_utf8_stdout, normalize_text, tokenize
 
@@ -22,7 +23,10 @@ PROJECT_DIR = Path(__file__).parent.parent
 STANDARDIZED_DIR = PROJECT_DIR / "data" / "standardized"
 MANIFEST_PATH = PROJECT_DIR / "data" / "pageindex_manifest.json"
 PAGEINDEX_API_KEY = os.getenv("PAGEINDEX_API_KEY", "")
-PAGEINDEX_API_URL = "https://api.pageindex.ai"
+
+
+def _client() -> PageIndexClient:
+    return PageIndexClient(api_key=PAGEINDEX_API_KEY)
 
 
 def _sections(path: Path) -> list[dict]:
@@ -58,23 +62,17 @@ def upload_documents() -> list[dict]:
             "sections": len(_sections(path)),
             "status": "indexed_locally",
         })
-    # Current official SDK accepts PDFs for document processing. Remote mode is explicit
-    # because uploads change external state and can consume quota:
+    # Official SDK (pageindex.PageIndexClient) accepts PDFs for document processing. Remote
+    # mode is explicit because uploads change external state and can consume quota:
     # https://docs.pageindex.ai/getting-started
     if PAGEINDEX_API_KEY and os.getenv("PAGEINDEX_REMOTE", "0") == "1":
+        client = _client()
         for pdf_path in sorted((PROJECT_DIR / "data" / "landing" / "legal").glob("*.pdf")):
-            with pdf_path.open("rb") as file_handle:
-                response = requests.post(
-                    f"{PAGEINDEX_API_URL}/doc/",
-                    headers={"api_key": PAGEINDEX_API_KEY},
-                    files={"file": (pdf_path.name, file_handle, "application/pdf")},
-                    timeout=120,
-                )
-            response.raise_for_status()
+            result = client.submit_document(str(pdf_path))
             manifest.append({
                 "source": pdf_path.name,
                 "path": str(pdf_path.relative_to(PROJECT_DIR)),
-                "doc_id": response.json().get("doc_id"),
+                "doc_id": result.get("doc_id"),
                 "status": "submitted_remote",
             })
     MANIFEST_PATH.parent.mkdir(parents=True, exist_ok=True)
@@ -103,27 +101,16 @@ def _remote_search(query: str, top_k: int) -> list[dict]:
         return []
     manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
     documents = [item for item in manifest if item.get("doc_id")]
+    client = _client()
     results = []
     for document in documents:
-        response = requests.post(
-            f"{PAGEINDEX_API_URL}/retrieval/",
-            headers={"api_key": PAGEINDEX_API_KEY},
-            json={"doc_id": document["doc_id"], "query": query, "thinking": False},
-            timeout=30,
-        )
-        response.raise_for_status()
-        retrieval_id = response.json().get("retrieval_id")
+        submitted = client.submit_query(document["doc_id"], query, thinking=False)
+        retrieval_id = submitted.get("retrieval_id")
         if not retrieval_id:
             continue
         payload = {}
         for _ in range(15):
-            status = requests.get(
-                f"{PAGEINDEX_API_URL}/retrieval/{retrieval_id}/",
-                headers={"api_key": PAGEINDEX_API_KEY},
-                timeout=30,
-            )
-            status.raise_for_status()
-            payload = status.json()
+            payload = client.get_retrieval(retrieval_id)
             if payload.get("status") in {"completed", "failed"}:
                 break
             time.sleep(1)
@@ -152,7 +139,7 @@ def pageindex_search(query: str, top_k: int = 5) -> list[dict]:
         remote_results = _remote_search(query, top_k)
         if remote_results:
             return remote_results
-    except (requests.RequestException, OSError, ValueError, json.JSONDecodeError):
+    except (PageIndexAPIError, requests.RequestException, OSError, ValueError, json.JSONDecodeError):
         # The local structural index is the availability fallback, not a silent failure.
         pass
     stopwords = {"la", "va", "co", "the", "khi", "cho", "cua", "toi", "mot", "nhung", "gi", "nao"}

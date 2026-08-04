@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import html
+import os
 import re
 import time
 
@@ -66,6 +67,14 @@ if "pending_query" not in st.session_state:
 with st.sidebar:
     st.header("Thiết lập")
     top_k = st.slider("Số đoạn bằng chứng", 3, 8, 5, help="Nhiều đoạn tăng recall nhưng có thể giảm precision.")
+    lexical_method = st.radio(
+        "Lexical search",
+        options=["bm25", "tfidf"],
+        format_func=lambda v: "BM25" if v == "bm25" else "TF-IDF",
+        horizontal=True,
+        help="Thuật toán cho nhánh sparse retrieval trong hybrid search: BM25 (bão hoà tần suất từ, "
+        "chuẩn hoá độ dài) hoặc TF-IDF cosine (mô hình vector space cổ điển).",
+    )
     show_debug = st.toggle("Hiện query sau mở rộng", value=False)
     if st.button("🗑️ Xóa hội thoại", use_container_width=True):
         st.session_state.messages = []
@@ -94,6 +103,7 @@ for message in st.session_state.messages:
             columns[1].caption(f"Generation: {message.get('generation_mode', 'offline').upper()}")
             columns[2].caption(f"Độ trễ: {message.get('latency', 0):.2f}s")
             columns[3].caption(f"Chunks: {len(message.get('sources', []))}")
+            st.caption(f"Lexical: {message.get('lexical_method', 'bm25').upper()}")
             with st.expander(f"📚 Nguồn tham khảo ({len(message.get('sources', []))})"):
                 render_sources(message.get("sources", []), message.get("query", ""))
 
@@ -109,6 +119,7 @@ if query:
         started = time.perf_counter()
         with st.spinner("Đang truy xuất và kiểm tra bằng chứng…"):
             try:
+                os.environ["LEXICAL_METHOD"] = lexical_method
                 result = generate_with_citation(query, top_k=top_k, conversation_history=history)
                 answer = result["answer"]
                 sources = result.get("sources", [])
@@ -129,9 +140,11 @@ if query:
         metrics[1].metric("Generation", generation_mode.upper())
         metrics[2].metric("Độ trễ", f"{latency:.2f}s")
         metrics[3].metric("Số chunks", len(sources))
+        st.caption(f"Lexical search: {lexical_method.upper()}")
         with st.expander(f"📚 Nguồn tham khảo ({len(sources)})", expanded=True):
             render_sources(sources, query)
     st.session_state.messages.append({
         "role": "assistant", "content": answer, "sources": sources, "query": query,
         "retrieval_source": retrieval_source, "generation_mode": generation_mode, "latency": latency,
+        "lexical_method": lexical_method,
     })

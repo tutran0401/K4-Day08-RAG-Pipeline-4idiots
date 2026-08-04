@@ -6,14 +6,26 @@ from .retrieval_utils import cosine_similarity, hashing_embedding, keyword_overl
 
 
 def rerank_cross_encoder(query: str, candidates: list[dict], top_k: int = 5) -> list[dict]:
-    """Dependency-free relevance reranker; keeps the interface of a cross encoder."""
+    """Dependency-free relevance reranker; keeps the interface of a cross encoder.
+
+    retrieval_score is min-max normalized across this candidate batch before blending,
+    since its raw scale differs by retrieval_mode (RRF scores top out around 1/60,
+    BM25 is unbounded, cosine is already ~[0, 1]) — clipping to [0, 1] instead would let
+    RRF-fused candidates fall through with a near-zero contribution, silently collapsing
+    the intended 0.7/0.3 blend to ~1.0/0.0 in hybrid mode.
+    """
+    if not candidates:
+        return []
+    raw_scores = [float(candidate.get("score", 0.0)) for candidate in candidates]
+    lo, hi = min(raw_scores), max(raw_scores)
+    spread = hi - lo
     rescored = []
-    for candidate in candidates:
+    for candidate, original in zip(candidates, raw_scores):
         item = dict(candidate)
         overlap = keyword_overlap(query, item.get("content", ""))
-        original = float(item.get("score", 0.0))
+        normalized = (original - lo) / spread if spread else 1.0
         item["retrieval_score"] = original
-        item["score"] = round(0.7 * overlap + 0.3 * min(max(original, 0.0), 1.0), 6)
+        item["score"] = round(0.7 * overlap + 0.3 * normalized, 6)
         rescored.append(item)
     rescored.sort(key=lambda item: item["score"], reverse=True)
     return rescored[:max(0, top_k)]
