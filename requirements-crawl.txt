@@ -1,0 +1,6 @@
+-r requirements.txt
+
+# Optional Task 2 browser crawler. The default task also has a requests fallback.
+crawl4ai==0.9.2
+# Pin a Windows wheel; newer resolver fallbacks may select a source build requiring Rust.
+litellm==1.81.13
