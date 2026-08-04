@@ -1,0 +1,80 @@
+[
+  {
+    "source": "payment_methods_policy.md",
+    "path": "legal/payment_methods_policy.md",
+    "sections": 1,
+    "status": "indexed_locally"
+  },
+  {
+    "source": "returns_refunds_policy.md",
+    "path": "legal/returns_refunds_policy.md",
+    "sections": 1,
+    "status": "indexed_locally"
+  },
+  {
+    "source": "seller_listing_privacy_policy.md",
+    "path": "legal/seller_listing_privacy_policy.md",
+    "sections": 1,
+    "status": "indexed_locally"
+  },
+  {
+    "source": "account_privacy_guide.md",
+    "path": "news/account_privacy_guide.md",
+    "sections": 1,
+    "status": "indexed_locally"
+  },
+  {
+    "source": "article_01.md",
+    "path": "news/article_01.md",
+    "sections": 1,
+    "status": "indexed_locally"
+  },
+  {
+    "source": "article_02.md",
+    "path": "news/article_02.md",
+    "sections": 1,
+    "status": "indexed_locally"
+  },
+  {
+    "source": "article_03.md",
+    "path": "news/article_03.md",
+    "sections": 1,
+    "status": "indexed_locally"
+  },
+  {
+    "source": "article_04.md",
+    "path": "news/article_04.md",
+    "sections": 1,
+    "status": "indexed_locally"
+  },
+  {
+    "source": "article_05.md",
+    "path": "news/article_05.md",
+    "sections": 1,
+    "status": "indexed_locally"
+  },
+  {
+    "source": "change_payment_guide.md",
+    "path": "news/change_payment_guide.md",
+    "sections": 1,
+    "status": "indexed_locally"
+  },
+  {
+    "source": "cross_border_shopping_guide.md",
+    "path": "news/cross_border_shopping_guide.md",
+    "sections": 1,
+    "status": "indexed_locally"
+  },
+  {
+    "source": "order_tracking_guide.md",
+    "path": "news/order_tracking_guide.md",
+    "sections": 1,
+    "status": "indexed_locally"
+  },
+  {
+    "source": "refund_evidence_guide.md",
+    "path": "news/refund_evidence_guide.md",
+    "sections": 1,
+    "status": "indexed_locally"
+  }
+]
