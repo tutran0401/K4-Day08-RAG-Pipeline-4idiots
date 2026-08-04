@@ -36,9 +36,14 @@ Dữ liệu mẫu trong repo được crawl thật từ trang trung tâm trợ g
 ```
 K4-Day08-RAG-Pipeline-Starter/
 ├── README.md
+├── PROJECT_HANDOFF.md      ← Bàn giao theo Task và từng thành viên
+├── SUGGESTED_TOPICS.md     ← 9 chủ đề đồ án RAG gợi ý từ upstream
 ├── LAB_GUIDE.md           ← Hướng dẫn chi tiết & Codelab
 ├── checkpoint_timer.html  ← Dashboard đếm ngược Checkpoint & Phân vai
 ├── app.py                 ← Streamlit chatbot (bài nhóm)
+├── requirements.txt       ← Runtime mặc định đã kiểm tra
+├── requirements-crawl.txt ← Crawl4AI tùy chọn
+├── requirements-ragas.txt ← RAGAS legacy, dùng môi trường riêng
 ├── data/
 │   ├── landing/           ← Task 1 & 2: raw files (PDF, JSON)
 │   └── standardized/      ← Task 3: converted markdown files
@@ -530,10 +535,10 @@ run_dashboard()
 
 #### Deliverable Evaluation
 
-- [ ] File `group_project/evaluation/golden_dataset.json` — 15+ cặp Q&A
-- [ ] File `group_project/evaluation/eval_pipeline.py` — script chạy evaluation
-- [ ] File `group_project/evaluation/results.md` — bảng điểm + phân tích
-- [ ] So sánh A/B ít nhất 2 configs
+- [x] File `group_project/evaluation/golden_dataset.json` — 16 cặp Q&A
+- [x] File `group_project/evaluation/eval_pipeline.py` — script chạy evaluation offline + RAGAS opt-in
+- [x] File `group_project/evaluation/results.md` — bảng điểm + phân tích worst performers
+- [x] So sánh A/B: hybrid + rerank với dense-only
 
 ---
 
@@ -549,8 +554,10 @@ run_dashboard()
 
 ### Kiến Trúc Hệ Thống
 
-```
-[Vẽ diagram kiến trúc ở đây]
+```text
+Streamlit → Query Expansion → Semantic ┐
+                                      ├→ RRF → Rerank → Generation + Citation
+                         BM25 ─────────┘              ↘ PageIndex fallback
 ```
 
 ---
@@ -559,10 +566,10 @@ run_dashboard()
 
 | Thành viên | MSSV | Nhiệm vụ | Trạng thái |
 |-----------|------|----------|------------|
-| | | | |
-| | | | |
-| | | | |
-| | | | |
+| Bùi Tùng Lâm | 2A202601676 | Role 1 — Team Leader & Architect: điều phối, review kiến trúc, tích hợp và thuyết trình tổng quan | Hoàn thành |
+| Chu Tâm Vũ | 2A202601360 | Role 2 — Data & Retrieval Specialist: Task 1, 4, 7, 9 và tích hợp generation | Hoàn thành |
+| Nguyễn Đức Anh Tuấn | 2A202601618 | Role 3 — Frontend & Chatbot Developer: Task 2, 5, 8, 10 và Streamlit UI | Hoàn thành |
+| Trần Anh Tú | 2A202601674 | Role 4 — Evaluation & QA Engineer: Task 3, 6, fallback/citation QA và evaluation | Hoàn thành |
 
 ---
 
@@ -593,10 +600,25 @@ pip install -r requirements.txt
 ```
 
 Tạo file `.env` từ `.env.example`:
-```bash
-cp .env.example .env
-# Điền API keys vào .env
+```powershell
+Copy-Item .env.example .env
+# Mở .env, thay sk-or-v1-... bằng OpenRouter API key thật
+# Giữ LLM_MODEL=openrouter/free để demo bằng model miễn phí
 ```
+
+Chỉ dùng **một** nhà cung cấp trong `.env`:
+
+```dotenv
+# Cách 1 — OpenRouter (khuyên dùng cho bài lab)
+OPENROUTER_API_KEY=sk-or-v1-KEY_THAT_CUA_BAN
+LLM_MODEL=openrouter/free
+
+# Cách 2 — OpenAI trực tiếp (comment/xóa OPENROUTER_API_KEY ở trên)
+# OPENAI_API_KEY=sk-proj-KEY_THAT_CUA_BAN
+# LLM_MODEL=gpt-4o-mini
+```
+
+Không dán key vào code, terminal history hoặc Git. File `.env` đã được khai báo trong `.gitignore`.
 
 ---
 
